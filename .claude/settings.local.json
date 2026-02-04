@@ -6,7 +6,11 @@
       "Bash(git -C /Users/tomyanzhiyuan/GitHub/cookieclickervision remote -v)",
       "Bash(git add:*)",
       "Bash(git commit:*)",
-      "Bash(tree:*)"
+      "Bash(tree:*)",
+      "Bash(git push:*)",
+      "Bash(git tag:*)",
+      "Bash(gh release create:*)",
+      "Bash(gh release view:*)"
     ]
   }
 }

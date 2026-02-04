@@ -73,12 +73,17 @@ class GameStateAdapter {
    * @returns {Object} Normalized building data
    */
   _extractBuildingState(building, key) {
+    // In Cookie Clicker, building.cps is a FUNCTION that returns base CPS
+    const baseCPS = typeof building.cps === 'function'
+      ? building.cps(building)
+      : (building.cps || 0);
+
     return {
       id: key,
       name: building.name,
       owned: building.amount,
       cost: building.price,
-      baseCPS: building.cps, // Base CPS per individual building
+      baseCPS: baseCPS, // Base CPS per individual building
       totalCPS: building.storedCps || 0, // Total CPS from all owned buildings of this type
       // Additional metadata for future use
       unlocked: building.unlocked !== 0,
@@ -102,7 +107,10 @@ class GameStateAdapter {
 
     // Fallback: calculate from base CPS and amount
     // (Less accurate due to missing multipliers, but better than nothing)
-    const baseCPS = building.cps || 0;
+    // In Cookie Clicker, building.cps is a FUNCTION
+    const baseCPS = typeof building.cps === 'function'
+      ? building.cps(building)
+      : (building.cps || 0);
     const amount = building.amount || 0;
     return baseCPS * amount;
   }
@@ -194,9 +202,14 @@ class GameStateAdapter {
    * @returns {number} Multiplier (1.0 = no multiplier, 2.0 = double, etc.)
    */
   _getBuildingMultiplier(building) {
+    // In Cookie Clicker, building.cps is a FUNCTION
+    const baseCPS = typeof building.cps === 'function'
+      ? building.cps(building)
+      : (building.cps || 0);
+
     // If building has some owned and has storedCps, we can calculate multiplier
-    if (building.amount > 0 && building.storedCps > 0 && building.cps > 0) {
-      const baseTotal = building.cps * building.amount;
+    if (building.amount > 0 && building.storedCps > 0 && baseCPS > 0) {
+      const baseTotal = baseCPS * building.amount;
       const multiplier = building.storedCps / baseTotal;
       return multiplier;
     }

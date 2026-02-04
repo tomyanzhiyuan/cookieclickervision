@@ -65,8 +65,9 @@ const Validators = {
       return false;
     }
 
-    // Must have base CPS value
-    if (typeof building.cps !== 'number' || building.cps < 0) {
+    // Must have CPS - either as a function (Cookie Clicker) or stored value
+    // In Cookie Clicker, building.cps is a function, and storedCps is the actual value
+    if (typeof building.cps !== 'function' && typeof building.storedCps !== 'number') {
       return false;
     }
 
