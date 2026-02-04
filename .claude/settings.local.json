@@ -4,7 +4,9 @@
       "Bash(git -C /Users/tomyanzhiyuan/GitHub/cookieclickervision log --oneline -10)",
       "Bash(git -C /Users/tomyanzhiyuan/GitHub/cookieclickervision branch -a)",
       "Bash(git -C /Users/tomyanzhiyuan/GitHub/cookieclickervision remote -v)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(tree:*)"
     ]
   }
 }
