@@ -22,16 +22,40 @@ The Cookie Clicker ROI Advisor:
 
 ## How to Use
 
-### Step 1: Open Cookie Clicker
-Navigate to https://orteil.dashnet.org/cookieclicker/ in your browser and start playing.
+### 🚀 Quick Start (Easiest Method - Recommended for New Users)
 
-### Step 2: Open Browser Console
-- **Windows/Linux:** Press `F12`
-- **Mac:** Press `Cmd+Option+J`
-- Or right-click → "Inspect" → "Console" tab
+1. **Open Cookie Clicker** → <https://orteil.dashnet.org/cookieclicker/>
 
-### Step 3: Load the Advisor
-Copy and paste all the JavaScript files into the console in this order:
+2. **Open Browser Console:**
+   - Windows/Linux: Press `F12`
+   - Mac: Press `Cmd+Option+J`
+   - Or right-click → "Inspect" → "Console" tab
+
+3. **Copy & Paste the Easy-Start File:**
+   - Open [`cookie-advisor-easy-start.js`](cookie-advisor-easy-start.js)
+   - Select all (Ctrl+A / Cmd+A)
+   - Copy (Ctrl+C / Cmd+C)
+   - Paste into the browser console
+   - Press Enter
+
+4. **Run Analysis:**
+   ```javascript
+   CookieAdvisor.analyze()
+   ```
+
+That's it! You now have access to all commands including:
+
+```javascript
+CookieAdvisor.analyze()    // Show best investment (1-hour filter)
+CookieAdvisor.showAll()    // Show ALL options (no time filter)
+CookieAdvisor.help()       // View all commands
+```
+
+---
+
+### 🔧 Advanced Method (For Developers)
+
+If you want to understand the modular architecture, you can load files individually:
 
 ```javascript
 // Paste these files in order:
@@ -47,7 +71,7 @@ Copy and paste all the JavaScript files into the console in this order:
 // ✓ Cookie Clicker ROI Advisor loaded successfully!
 ```
 
-### Step 4: Run Analysis
+Then run:
 ```javascript
 CookieAdvisor.analyze()
 ```
