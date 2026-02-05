@@ -73,6 +73,7 @@ const CookieAdvisor = (function() {
       if (recommendations.length === 0) {
         console.warn('⚠️ No valid recommendations after filtering.');
         console.log('All available purchases may have very long ROI times (>1 hour).');
+        console.log('Try: CookieAdvisor.showAll() to see all options.');
         return null;
       }
 
@@ -146,6 +147,81 @@ const CookieAdvisor = (function() {
     } catch (error) {
       console.error('Error getting recommendations:', error);
       return [];
+    }
+  }
+
+  /**
+   * Shows ALL recommendations without time filtering.
+   * Useful when all normal recommendations have very long ROI times.
+   *
+   * @returns {Object|null} Top recommendation (unfiltered), or null if none available
+   */
+  function showAll() {
+    try {
+      // Step 1: Validate Game object exists
+      if (typeof window === 'undefined' || !window.Game) {
+        console.error('❌ Cookie Clicker Game object not found!');
+        console.log('Make sure you are running this in the Cookie Clicker browser console.');
+        return null;
+      }
+
+      if (!Validators.isValidGameObject(window.Game)) {
+        console.error('❌ Game object is invalid or incomplete.');
+        console.log('Make sure Cookie Clicker has finished loading.');
+        return null;
+      }
+
+      // Step 2: Extract game state
+      const adapter = new GameStateAdapter(window.Game);
+      const gameState = adapter.getGameState();
+
+      // Validate extracted state
+      if (!Validators.isValidGameState(gameState)) {
+        console.error('❌ Failed to extract valid game state.');
+        return null;
+      }
+
+      // Step 3: Calculate ROI for all candidates
+      const model = new EconomicModel(gameState);
+      const candidates = model.getAllCandidates();
+
+      if (candidates.length === 0) {
+        console.warn('⚠️ No purchase candidates found.');
+        console.log('This might mean all buildings/upgrades are locked or unavailable.');
+        return null;
+      }
+
+      // Step 4: Use relaxed strategy (no time filter)
+      console.log('🔎 Showing ALL candidates (no time filter)...');
+
+      // Create inline RelaxedStrategy to avoid dependency issues
+      const relaxedRecommendations = candidates
+        .filter(c => Validators.isValidROI(c.roiTime))
+        .filter(c => Validators.isValidCandidate(c))
+        .sort((a, b) => a.roiTime - b.roiTime);
+
+      if (relaxedRecommendations.length === 0) {
+        console.warn('⚠️ No valid candidates found even without time filter.');
+        console.log('This might indicate an issue with game state extraction.');
+        return null;
+      }
+
+      // Step 5: Render output
+      const renderer = new OutputRenderer();
+      const topChoice = relaxedRecommendations[0];
+      const alternatives = relaxedRecommendations.slice(1, Constants.TOP_ALTERNATIVES_COUNT + 1);
+
+      renderer.renderRecommendation(topChoice, alternatives, gameState);
+
+      // Cache result
+      lastRecommendation = topChoice;
+
+      return topChoice;
+
+    } catch (error) {
+      console.error('❌ Error during analysis:', error);
+      console.error(error.stack);
+      return null;
     }
   }
 
@@ -247,6 +323,9 @@ const CookieAdvisor = (function() {
     console.log('  CookieAdvisor.analyze()');
     console.log('    → Run full analysis and show recommendations');
     console.log('');
+    console.log('  CookieAdvisor.showAll()');
+    console.log('    → Show ALL options (no time filter)');
+    console.log('');
     console.log('  CookieAdvisor.getRecommendation()');
     console.log('    → Get top recommendation without output');
     console.log('');
@@ -299,6 +378,7 @@ const CookieAdvisor = (function() {
     analyze,
     getRecommendation,
     getAllRecommendations,
+    showAll,
     setStrategy,
     getStrategyName,
     getLastRecommendation,
